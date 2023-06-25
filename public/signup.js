@@ -7,11 +7,32 @@ function formSubmit(e){
         password:document.getElementById('password').value,
         phoneNumber:document.getElementById('phn').value
     }
-const cnfpassword=document.getElementById('cnfpassword').value
-console.log(cnfpassword, userDetaits)
-//for showing error message
-if(cnfpassword!==userDetaits.password){
-    showError("Incorrect Does not matched. Please try again.")
+
+sendUserDetails(userDetaits)
+}
+
+async function sendUserDetails(details){
+  try{
+    const responce=await axios.post(`http://localhost:2000/user/signUp`,details)
+    console.log(responce.status)
+    if(responce.status===201){
+      showError("Successfuly signed up")
+    }
+     if(responce.status===303){
+          throw new Error(responce.data.errors[0].message)
+      }
+      else{
+          throw new Error('Faild to Login')
+      }
+  }
+   catch(err){
+  if(err=="Error: Request failed with status code 303"){
+    showError("User already exists, Please Login")
+  }
+  else{
+    showError(err)
+  }
+  console.log(err)
 }
 }
 
