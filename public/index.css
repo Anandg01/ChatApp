@@ -1,0 +1,50 @@
+body{
+font-family: Arial, Helvetica, sans-serif;
+}
+.nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #d8c1c1;
+    height: 35px;
+}.navItem{
+    margin-left: 7px;
+    margin-right: 7px;
+}
+.navItem3{
+    margin-right: 25px;
+}
+.container{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 11px;
+}
+.item{
+    width: 53%;
+    background: #fcfcfc;
+    margin-bottom: 40px;
+}
+ul{
+    list-style-type: none;
+}
+.licon li{
+    padding: 7px;
+}
+.licon li:nth-child(even){
+    background: hsl(0, 4%, 77%);
+    margin-top: 5px;
+}
+
+.input-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #3d3dcc;
+    position: fixed;
+    bottom: 18px;
+    width: 100%;
+    height: 33px;
+}
+#msginput input{
+    width: 150px;
+}

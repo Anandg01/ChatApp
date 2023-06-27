@@ -8,8 +8,11 @@ const usercred={
 }
 try{
   const validate = await axios.post(`http://localhost:2000/user/login`, usercred)
-console.log(validate.data)
 showMessage(validate.data.message)
+if(validate.status==200){
+  window.location.href='/index.html';
+  console.log(validate.data)
+}
 }
 catch(err){
 console.log(err)
