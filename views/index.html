@@ -1,29 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="stylesheet" href="../public/index.css">
+    <link rel="stylesheet" href="../public/index.css">
     <title>Home</title>
 </head>
+
 <body>
     <div class="nav">
         <div></div>
         <div class="navItem navItem2">Chat App</div>
-        <div class="navItem navItem3"><button class="btn" id="lgout">Logout</button></div>
+        <div class="navItem navItem3" ><button class="btn" id="lgout" style="background: red;"> Logout</button>
+            </div>
     </div>
-   <div class="container">
-    <div class="item item1" id="msgCont">
-   
+    <div class="container">
+        <div class="item item1">
+            <button class="btn" id="crtgp" style="background: #64ec64;" >Create Group</button>
+            <ul class="grpUl" id="gpList">
+            </ul>
+        </div>
+        <div class="item item2" id="item2">
+            <h1 style="text-align: center;" id="gpN"></h1>
+            <h4 style="text-align: center;" id="gpD"></h4>
+            <button id="addUserBtn" style="display: none;">H</button>
+                <form id="serchInput" onsubmit="searchUser(event)">
+                    <div id="clSerch" style="float: right; cursor: pointer; font-weight: bolder;">X</div>
+                    <input id="serchU" type="email" placeholder="search user by Email">
+                    <input id="serchPhn" type="number" placeholder="Search user by Phone">
+                       <button class="btn">Search User</button>
+                </form>
+            <div id="addUser-group">
+                <div id="UserName"></div>
+                <input type="checkbox" id="idCheck">
+                <label for="idCheck">Make Admin</label>
+                <button class="btn" id="btnIn1">Add User</button>  
+             </div>
+            <div id="add-show"></div>
+            <div id="sU">
+                <span id="close" style="float:right;">X</span>
+                <div id="userProb"></div>
+                <h6 style="text-align:center;">Group Member</h6>
+                <ul class="mli" id="mliId"></ul>
+            </div>
+            <div id="msgCont"></div>
+        </div>
     </div>
-   </div> 
-   <div class="input-container">
-   <form id="msginput" >
-    <input type="text" id="sendmsg">
-    <button class="btn" type="submit">Send</button>
-   </form>
-   </div>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-   <script src="../public/index.js"></script>
+    <div id="overlay">
+        <span id="cl">X</span>
+        <form onsubmit="createGroup(event)" class="form-container">
+            <label for="GroupName">Group Name</label>
+            <input class="form-item" type="text" id="GroupName">
+            <label for="Description">Group Description</label>
+            <input class="form-item" type="text" id="Description">
+            <div>Add Member in this Group</div>
+            <div class="select" id="boxU"></div>
+            <button type="submit">Create Group</button>
+        </form>
+    </div>
+
+    <div class="input-container">
+        <form id="msginput">
+            <input type="text" id="sendmsg">
+            <input type="hidden" id="hid" value="0">
+            <button class="btn" type="submit">Send</button>
+        </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+        integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../public/index.js"></script>
 </body>
+
 </html>
+
+

@@ -1,8 +1,9 @@
 const Sequilize=require('sequelize')
 
- const sequelize=new Sequilize('chatapp','root','pk123',{
+console.log(process.env.DB_HOST, process.env.DB_PASSWORD)
+ const sequelize=new Sequilize(process.env.DB_NAME,process.env.DB_USERNAME,process.env.DB_PASSWORD,{
    dialect: 'mysql',
-   host: 'localhost'
+   host: process.env.DB_HOST
  })
 
 module.exports=sequelize;

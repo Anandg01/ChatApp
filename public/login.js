@@ -11,7 +11,8 @@ try{
 showMessage(validate.data.message)
 if(validate.status==200){
   window.location.href='/index.html';
-  console.log(validate.data)
+  localStorage.setItem('token', validate.data.token)
+  alert(validate.data.message)
 }
 }
 catch(err){
@@ -24,3 +25,10 @@ showMessage(err)
 function showMessage(message){
   document.getElementById('message').innerHTML=`<p class="msg">${message}</p>`
 }
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const token=localStorage.getItem('token');
+  if(token){
+ window.location.href='/index.html'
+  }
+})
