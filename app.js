@@ -1,14 +1,28 @@
+const io=require('socket.io')(3000,{
+    cors:{
+        origin:['http://localhost:2000']
+    }
+})
+io.on('connection', socket => {
+    console.log('socket id', socket.id);
+  socket.on("send-groupId",group=>{
+    console.log(group)
+    io.emit("received",group)
+  })
+  });
+  
+
 const express=require('express')
 const dotenv = require('dotenv');
 dotenv.config();
 const sequelize=require('./util/database')
 const cors=require('cors')
 
-
 const path=require('path')
 
 
 const app=express()
+
 app.use(cors(
     {
         origin:"http://localhost:2000"
@@ -42,6 +56,7 @@ const User=require('./model/user');
 const Chtmsg=require('./model/chatmsg');
 const Group=require('./model/group');
 const userGroup=require('./model/userGroup')
+const message = require('./model/chatmsg')
 
 
 User.hasMany(Chtmsg);

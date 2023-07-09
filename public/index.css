@@ -175,3 +175,30 @@ button#addUserBtn {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     border-radius: 0.5rem;
 }
+.media-show{
+    width: 300px;
+    height: auto;
+    display: inline-block;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .pre-media{
+    width: 400px;
+    height: auto;
+    display: inline-block;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .prevBtn{
+    border-radius:0.5rem;
+    height: 31px;
+    box-shadow: 0 0 10px #0e05054d;
+    border: 1px solid #eecece;
+     margin-top: 10px;
+     cursor: pointer;
+  }

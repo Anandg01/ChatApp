@@ -1,3 +1,4 @@
+const socket = io('http://localhost:3000');
 
 const msgInput = document.getElementById('msginput');
 const token = localStorage.getItem('token')
@@ -6,6 +7,27 @@ const hidInput = document.getElementById('hid')
 const arrst = JSON.parse(storagemsg)
 let lastmsgId = -1
 let bkcontainer = [];
+
+socket.on("received", async (groupId) => {
+  
+    if (groupId == hidInput.value) {
+        const GroupMsg = await axios.get(`/getmsg?lastmsgId=${lastmsgId}&groupId=${hidInput.value}`, { headers: { 'Authorizan': token } })
+        if (lastmsgId == -1) {
+            console.log("last idn -1", lastmsgId)
+            createUlList()
+        }
+        console.log(GroupMsg.data)
+        GroupMsg.data.forEach((message) => {
+            lastmsgId = message.id
+            console.log("las gg", lastmsgId)
+            showMsgOnScreen(message.user.name, message.message, message.url)
+        })
+    }
+    else {
+        console.log("group not matched")
+    }
+})
+
 document.addEventListener('DOMContentLoaded', async () => {
     if (!token) {
         window.location.href = '/login.html'
@@ -31,13 +53,12 @@ msgInput.addEventListener('submit', async (event) => {
     event.preventDefault()
     const message = event.target.sendmsg.value;
     const groupId = event.target.hid.value;
-    console.log(groupId)
-    console.log(message)
     try {
         const post = await axios.post(`/msgpost`, { message: message, groupId: groupId }, { headers: { 'Authorizan': token } })
         const getmessage = post.data.message;
+
+        socket.emit("send-groupId", groupId)
         //    showMsgOnScreen("You", getmessage)
-        console.log(getmessage)
         document.getElementById('sendmsg').value = '';
     }
     catch (err) {
@@ -45,10 +66,26 @@ msgInput.addEventListener('submit', async (event) => {
     }
 })
 
-function showMsgOnScreen(senderName, message) {
+function showMsgOnScreen(senderName, message, url) {
     const listUl = document.getElementById('ulitem')
     const listItem = document.createElement("li");
-    listItem.textContent = `${senderName}: ${message}`
+    const textContainer = document.createElement('div');
+    textContainer.textContent = `${senderName}: ${message}`;
+    listItem.appendChild(textContainer)
+
+    if (message == "img") {
+        const img = document.createElement('img')
+        img.src = url
+        img.classList.add('media-show')
+        listItem.appendChild(img)
+    }
+    else if (message == "video") {
+        const vdo = document.createElement("video")
+        vdo.src = url
+        vdo.classList.add("media-show")
+        vdo.controls = true;
+        listItem.appendChild(vdo)
+    }
     listUl.appendChild(listItem)
 }
 
@@ -66,7 +103,6 @@ function realTimemsg() {
         try {
             const allmsg = await axios.get(`/getmsg?lastmsgId=${lastmsgId}}&groupId=${hidInput.value}`, { headers: { 'Authorizan': token } })
             // createUlList();
-            console.log(allmsg.data)
             if (lastmsgId == -1) {
                 createUlList();
             }
@@ -158,8 +194,8 @@ function showGrpOnscr(GroupObj) {
     const button = document.createElement('button');
     button.textContent = GroupObj.groupName;
     button.addEventListener('click', function () {
-        getGrp(GroupObj);
         lastmsgId = -1;
+        getGrp(GroupObj);
     });
 
     li.appendChild(button);
@@ -167,6 +203,7 @@ function showGrpOnscr(GroupObj) {
 }
 
 function getGrp(obj) {
+    console.log("getgrp mesg", lastmsgId)
     document.getElementById('gpN').textContent = obj.groupName
     document.getElementById('gpD').innerText = obj.description;
     document.getElementById('hid').value = obj.id;
@@ -175,9 +212,10 @@ function getGrp(obj) {
     axios.get(`/getmsg?lastmsgId=${lastmsgId}&groupId=${obj.id}`, { headers: { 'Authorizan': token } })
         .then(res => {
             createUlList();
-            realTimemsg()
+            //   realTimemsg()
             res.data.forEach((el) => {
-                showMsgOnScreen(el.senderName, el.message)
+                lastmsgId = el.id
+                showMsgOnScreen(el.user.name, el.message, el.url)
             })
             document.getElementById('sU').style.display = 'none'
         })
@@ -328,9 +366,9 @@ showUserandAdd.addEventListener('click', () => {
         })
             .catch(err => console.log(err))
     })
-    document.getElementById('hDiv2').addEventListener('click',()=>{
-        document.getElementById('serchInput').style.display='flex'
-       document.querySelector('#serchInput').style.color='red'
+    document.getElementById('hDiv2').addEventListener('click', () => {
+        document.getElementById('serchInput').style.display = 'flex'
+        document.querySelector('#serchInput').style.color = 'red'
     })
 })
 
@@ -340,10 +378,10 @@ async function searchUser(event) {
     const phoneNumber = event.target.serchPhn.value;
     const user = await axios.get(`/user/search?email=${email}&phoneNumber=${phoneNumber}`)
     console.log(user.data)
-    if(user.status==200){
+    if (user.status == 200) {
         adduserInGroup(user.data)
     }
-    else{
+    else {
         confirm(user.data)
     }
 }
@@ -352,22 +390,83 @@ function adduserInGroup(user) {
     document.getElementById('addUser-group').style.display = 'block'
     document.getElementById('UserName').innerText = `${user.name} : ${user.email}`
     const markAdmin = document.getElementById('idCheck')
-   document.getElementById('btnIn1').addEventListener('click', () => {
+    document.getElementById('btnIn1').addEventListener('click', () => {
         let admin = false;
         if (markAdmin.checked) {
-            admin=true;
+            admin = true;
             console.log('markAdmin is checked')
         }
-        axios.get(`/group/adduser?groupId=${hidInput.value}&userId=${user.id}&admin=${admin}`,{ headers: { 'Authorizan': token } })
-        .then(res=>{
-            console.log(res.data)
-          if(res.data.message){
-            confirm(res.data.message);
-          }
-        })
+        axios.get(`/group/adduser?groupId=${hidInput.value}&userId=${user.id}&admin=${admin}`, { headers: { 'Authorizan': token } })
+            .then(res => {
+                console.log(res.data)
+                if (res.data.message) {
+                    confirm(res.data.message);
+                }
+            })
     })
 }
 
-document.getElementById('clSerch').addEventListener('click',()=>{
-    document.getElementById('serchInput').style.display='none'
+document.getElementById('clSerch').addEventListener('click', () => {
+    document.getElementById('serchInput').style.display = 'none'
+})
+
+//media send 
+
+const fileInput = document.querySelectorAll('.fileInput')
+fileInput.forEach(item => {
+    item.addEventListener("change", (event) => {
+        let msg = "img";
+        const imagePreview = document.getElementById('image-preview');
+        const videoPreview = document.getElementById('videoPreview')
+        const file = event.target.files[0];
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('image-container').style.display = "block"
+
+            if (item.id === "imgInput") {
+                imagePreview.style.display = "block"
+                imagePreview.src = e.target.result;
+            }
+            else if (item.id === "vdoInput") {
+                videoPreview.style.display = "block"
+                videoPreview.src = e.target.result
+                msg = "video"
+            }
+        }
+        reader.readAsDataURL(file);
+
+        document.getElementById('sendImg').addEventListener("click", async () => {
+
+            try {
+                const response = await axios.post('http://localhost:2000/uploadImage', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                const post = await axios.post(`/msgpost`, { message: msg, groupId: hidInput.value, url: response.data }, { headers: { 'Authorizan': token } })
+              
+                socket.emit("send-groupId", hidInput.value)
+            }
+            catch (err) {
+                console.log(err)
+            }
+            document.getElementById('image-container').style.display = 'none'
+            imagePreview.src = "#"
+            videoPreview.src = '#'
+            imagePreview.style.display = "none";
+            videoPreview.style.display = "none"
+        })
+        document.getElementById('cancel').addEventListener('click', () => {
+            document.getElementById('image-container').style.display = 'none'
+            imagePreview.src = "#"
+            videoPreview.src = '#'
+            imagePreview.style.display = "none";
+            videoPreview.style.display = "none"
+        })
+    })
+
 })

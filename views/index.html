@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../public/index.css">
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <title>Home</title>
 </head>
 
@@ -12,12 +14,12 @@
     <div class="nav">
         <div></div>
         <div class="navItem navItem2">Chat App</div>
-        <div class="navItem navItem3" ><button class="btn" id="lgout" style="background: red;"> Logout</button>
-            </div>
+        <div class="navItem navItem3"><button class="btn" id="lgout" style="background: red;"> Logout</button>
+        </div>
     </div>
     <div class="container">
         <div class="item item1">
-            <button class="btn" id="crtgp" style="background: #64ec64;" >Create Group</button>
+            <button class="btn" id="crtgp" style="background: #64ec64;">Create Group</button>
             <ul class="grpUl" id="gpList">
             </ul>
         </div>
@@ -25,18 +27,18 @@
             <h1 style="text-align: center;" id="gpN"></h1>
             <h4 style="text-align: center;" id="gpD"></h4>
             <button id="addUserBtn" style="display: none;">H</button>
-                <form id="serchInput" onsubmit="searchUser(event)">
-                    <div id="clSerch" style="float: right; cursor: pointer; font-weight: bolder;">X</div>
-                    <input id="serchU" type="email" placeholder="search user by Email">
-                    <input id="serchPhn" type="number" placeholder="Search user by Phone">
-                       <button class="btn">Search User</button>
-                </form>
+            <form id="serchInput" onsubmit="searchUser(event)">
+                <div id="clSerch" style="float: right; cursor: pointer; font-weight: bolder;">X</div>
+                <input id="serchU" type="email" placeholder="search user by Email">
+                <input id="serchPhn" type="number" placeholder="Search user by Phone">
+                <button class="btn">Search User</button>
+            </form>
             <div id="addUser-group">
                 <div id="UserName"></div>
                 <input type="checkbox" id="idCheck">
                 <label for="idCheck">Make Admin</label>
-                <button class="btn" id="btnIn1">Add User</button>  
-             </div>
+                <button class="btn" id="btnIn1">Add User</button>
+            </div>
             <div id="add-show"></div>
             <div id="sU">
                 <span id="close" style="float:right;">X</span>
@@ -45,6 +47,13 @@
                 <ul class="mli" id="mliId"></ul>
             </div>
             <div id="msgCont"></div>
+            <div id="image-container" style="display: none;">
+                <img class="pre-media" style="display: none;" id="image-preview" src="#" alt="Preview" style=" max-width: 500px;
+                max-height: 500px;"  />
+                <video class="pre-media" id="videoPreview" src="#" width="400" height="300" controls style="display: none;"></video>
+                <button class="prevBtn" id="cancel" style="background: red;">Calcel</button>
+                <button class="prevBtn" id="sendImg" style="background: green;">Send</button>
+            </div>
         </div>
     </div>
     <div id="overlay">
@@ -64,8 +73,17 @@
         <form id="msginput">
             <input type="text" id="sendmsg">
             <input type="hidden" id="hid" value="0">
+            <label for="imgInput" class="file-label">
+                <i class="fas fa-camera" style="font-size: xx-large; color: #fcfcfc;"></i>
+                </label>
+            <input type="file" id="imgInput" accept="image/*" style="display: none;" class="fileInput">
+               <label for="vdoInput">
+                <i class="fas fa-video" style="font-size: xx-large; color: #fcfcfc;"></i>
+               </label>
+               <input type="file" id="vdoInput" accept="video/*" class="fileInput" style="display: none;">
             <button class="btn" type="submit">Send</button>
         </form>
+
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
         integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
@@ -74,5 +92,3 @@
 </body>
 
 </html>
-
-

@@ -11,6 +11,9 @@ const message= sequelize.define('chatmessage',{
     message:{
         type:Sequilize.STRING,
         alowNull:false
+        },
+        url:{
+            type:Sequilize.STRING
         }
 })
 
